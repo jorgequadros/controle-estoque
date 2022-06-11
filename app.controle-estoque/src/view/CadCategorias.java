@@ -1,9 +1,8 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.EventQueue;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -13,67 +12,90 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
+import modulo.Categoria;
 import modulo.CategoriaDAO;
 
 public class CadCategorias extends JInternalFrame {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private JLabel lbDescricao = new JLabel("Descrição");
-	private JTextField tfDescricao = new JTextField(20);
-	private JButton btIncluir, btCancelar, btAlterar, btExcluir, btSair, btPesquisa;
 	private JTable tabela;
-	CategoriaDAO tm;
-	
-	
+	private JTextField tfDescricao;
+
+	/**
+	 * Launch the application.
+	 */
+		public CadCategorias() {
+		setBounds(100, 100, 450, 300);
 		
-	
-	public CadCategorias() throws SQLException {
-		super("Cadastro de Categorias",true,true,true,true);
-		// TODO Auto-generated constructor stub
-		JPanel conteudo= new JPanel();
-		conteudo.setLayout(new GridLayout(2,1));
-		conteudo.add(lbDescricao);
-		conteudo.add(tfDescricao);
+		JPanel pnCampo = new JPanel();
+		getContentPane().add(pnCampo, BorderLayout.NORTH);
 		
-		tm = new CategoriaDAO();
+		JLabel lblDescricao = new JLabel("Descri\u00E7\u00E3o");
+		pnCampo.add(lblDescricao);
 		
-		//tabela = new JTable(tm);
+		tfDescricao = new JTextField();
+		pnCampo.add(tfDescricao);
+		tfDescricao.setColumns(10);
 		
-		JPanel rodape = new JPanel(new GridLayout(1, 6));
-		btAlterar = new JButton("Alterar");
-		EventosBotoes eventos = new EventosBotoes();
-		btAlterar.addActionListener(eventos);
-		btExcluir = new JButton("Excluir");
-		btCancelar = new JButton("Cancelar");
-		btPesquisa = new JButton("Pesquisar");
-		btIncluir = new JButton("Incluir");
-		btSair = new JButton("Sair");
-		rodape.add(btAlterar);
-		rodape.add(btExcluir);
-		rodape.add(btIncluir);
-		rodape.add(btCancelar);
-		rodape.add(btPesquisa);
-		rodape.add(btSair);
+		JPanel pnBotoes = new JPanel();
+		getContentPane().add(pnBotoes, BorderLayout.SOUTH);
 		
-		add(conteudo,BorderLayout.NORTH);
-		add("Center",new JScrollPane(tabela));
-		add(rodape,BorderLayout.SOUTH);
+		JButton btAlterar = new JButton("Alterar");
+		pnBotoes.add(btAlterar);
 		
+		JButton btCadastrar = new JButton("Cadastrar");
+		pnBotoes.add(btCadastrar);
+		
+		JButton btSair = new JButton("Sair");
+		pnBotoes.add(btSair);
+		
+		JButton btExcluir = new JButton("Excluir");
+		pnBotoes.add(btExcluir);
+		
+		JButton btPesquisa = new JButton("Pesquisa");
+		pnBotoes.add(btPesquisa);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		getContentPane().add(scrollPane, BorderLayout.CENTER);
+		
+		tabela = new JTable();
+		tabela.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"ID", "Descri\u00E7\u00E3o"
+			}
+		));
+		scrollPane.setViewportView(tabela);
+		
+		DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
+		tabela.setRowSorter(new TableRowSorter<DefaultTableModel>(modelo));
+		
+		try {
+			lerTabela();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 	
-	private class EventosBotoes implements ActionListener{
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
+	public void lerTabela() throws IOException, SQLException {
+		DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
+		modelo.setNumRows(0);
+		CategoriaDAO cdao = new CategoriaDAO();
+		
+		for(Categoria c: cdao.obterCategoria()) {
+			modelo.addRow(new Object[] {
+					c.getId(),
+					c.getDescricao()
+					});
 			
 		}
-		
 	}
-	
-	
+
 }
