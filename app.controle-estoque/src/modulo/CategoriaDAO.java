@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 public class CategoriaDAO {
 	
 	private static CategoriaDAO instance =null;
@@ -28,31 +30,44 @@ public class CategoriaDAO {
 		}
 	}
 
-	public void inserirRegistro(String descricao) throws IOException, SQLException {
-		if(!descricao.isEmpty() || descricao!=null) {
+	public void inserirRegistro(Categoria c) throws IOException, SQLException {
+		if(!c.getDescricao().isEmpty() || c.getDescricao()!=null) {
 			Connection conexao = ConexaoBD.getConexao();
 			String sql = "INSERT INTO categoria (descricao) values(?)";
 			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setString(1, descricao);
+			stmt.setString(1, c.getDescricao());
 			stmt.execute();
 			stmt.close();
 		}
 		
 	}
 	
-	public void updateRegistro(String descricao, String id) throws IOException, SQLException {
+	public void updateRegistro(Categoria c) throws SQLException {
 
-		Connection conexao = ConexaoBD.getConexao();
-		String sql = "UPDATE categorias SET descricao = ? where id = ?";
-		PreparedStatement stmt = conexao.prepareStatement(sql);
-		stmt.setString(1, descricao);
-		stmt.setString(2, id);
-		stmt.execute();
-		stmt.close();
+		Connection conexao = null;
+		try {
+			conexao = ConexaoBD.getConexao();
+			String sql = "UPDATE categorias SET descricao = ? where id = ?";
+			PreparedStatement stmt;
+			stmt = conexao.prepareStatement(sql);
+			stmt.setString(1, c.getDescricao());
+			stmt.setInt(2, c.getId());
+			stmt.execute();
+			stmt.close();
+			
+			
+			JOptionPane.showMessageDialog(null, "Atualizado com Sucesso!");
+		} catch (IOException | SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "[ERRO]Erro ao Atualizar!" + e);
+			
+		}
+		
+	
 		
 	}
 	
-	public void deleteRegistro(String id) throws IOException {
+	public void deleteRegistro(Categoria c) throws IOException {
 		ConexaoBD.getInstance();
 		Connection conexao = ConexaoBD.getConexao();
 		String sql = "DELETE  from categorias where id = ?";
@@ -60,7 +75,7 @@ public class CategoriaDAO {
 		
 		try {
 			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setString(1, id);
+			stmt.setInt(1, c.getId());
 			stmt.execute();
 			stmt.close();
 			

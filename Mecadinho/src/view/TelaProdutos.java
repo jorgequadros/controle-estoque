@@ -17,6 +17,8 @@ import Model.bean.ProdutosDAO;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class TelaProdutos {
 
@@ -125,13 +127,24 @@ public class TelaProdutos {
 		panelBotoes.add(btAtualizar);
 		
 		JScrollPane scrollPane = new JScrollPane();
+		
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
 		table = new JTable();
+		table.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(table.getSelectedRow()!=-1) {
+					tfDescricao.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+					tfQtde.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
+					tfValor.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+				}
+				
+			}
+		});
 		table.setModel(tableModal);
 		scrollPane.setViewportView(table);
-		ProdutosDAO dao = new ProdutosDAO();
-		dao.obterProdutos();
+		
 	}
 
 }

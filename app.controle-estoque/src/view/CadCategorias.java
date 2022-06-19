@@ -1,7 +1,8 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -17,8 +18,14 @@ import javax.swing.table.TableRowSorter;
 
 import modulo.Categoria;
 import modulo.CategoriaDAO;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class CadCategorias extends JInternalFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JTable tabela;
 	private JTextField tfDescricao;
 
@@ -42,6 +49,10 @@ public class CadCategorias extends JInternalFrame {
 		getContentPane().add(pnBotoes, BorderLayout.SOUTH);
 		
 		JButton btAlterar = new JButton("Alterar");
+		btAlterar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		pnBotoes.add(btAlterar);
 		
 		JButton btCadastrar = new JButton("Cadastrar");
@@ -60,6 +71,14 @@ public class CadCategorias extends JInternalFrame {
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
 		tabela = new JTable();
+		tabela.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(tabela.getSelectedRow()!=-1) {
+					tfDescricao.setText(tabela.getValueAt(tabela.getSelectedRow(), 1).toString());
+				}
+			}
+		});
 		tabela.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
@@ -74,10 +93,7 @@ public class CadCategorias extends JInternalFrame {
 		
 		try {
 			lerTabela();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
+		} catch (IOException |SQLException  e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

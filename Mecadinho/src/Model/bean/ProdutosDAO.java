@@ -1,12 +1,5 @@
 package Model.bean;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +13,7 @@ public class ProdutosDAO extends AbstractTableModel{
 	private static final long serialVersionUID = 1L;
 	private List<Produto> dados = new ArrayList<>();
 	private String[] colunas= {"Descrição","Qtde","Valor"};
-	private Statement stmt;
-	
+		
 	@Override
 	public String getColumnName(int column) {
 		// TODO Auto-generated method stub
@@ -83,33 +75,5 @@ public class ProdutosDAO extends AbstractTableModel{
 		this.fireTableRowsDeleted(linha, linha);
 	}
 	
-	public void obterProdutos() throws SQLException {
-		try {
-			conection.ConexaoBD.getInstance();
-			Connection con = conection.ConexaoBD.getConexao();
-			PreparedStatement stmt = con.prepareStatement("select * from produtos;");
-			ResultSet rs = stmt.executeQuery();
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int numCols = rsmd.getColumnCount();
-			
-			colunas = new String[numCols];
-			for(int i=0;i<numCols;i++) {colunas[i]=rsmd.getColumnName(i+1);};
-			dados.clear();
-			
-			while(rs.next()) {
-				List<Produto> p =new ArrayList<>();
-				p.set(0, null).setDescricao((String) rs.getObject(1));
-				p.set(1, null).setQtde((Integer) rs.getObject(2));
-				p.set(2, null).setValor((Double) rs.getObject(6));
-				dados.addAll(p);
-			}
-			fireTableDataChanged();
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
-
 }

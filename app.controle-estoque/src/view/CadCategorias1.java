@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -13,6 +16,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
+import modulo.Categoria;
+import modulo.CategoriaDAO;
 
 public class CadCategorias1 extends JInternalFrame {
 	
@@ -23,7 +31,7 @@ public class CadCategorias1 extends JInternalFrame {
 	private JLabel lbDescricao = new JLabel("Descrição");
 	private JTextField tfDescricao = new JTextField(20);
 	private JButton btIncluir, btCancelar, btAlterar, btExcluir, btSair, btPesquisa;
-	private JTable tabela;
+	private JTable consulta;
 			
 	
 	public CadCategorias1() throws SQLException {
@@ -35,17 +43,87 @@ public class CadCategorias1 extends JInternalFrame {
 		conteudo.add(lbDescricao);
 		conteudo.add(tfDescricao);
 		
-		JTable consulta = new JTable();
+		consulta = new JTable();
+		
+		consulta.setModel(new DefaultTableModel(
+				new Object[][] {
+				},
+				new String[] {
+					"ID", "Descri\u00E7\u00E3o"
+				}
+			));
+				
+		
+		
+		DefaultTableModel modelo = (DefaultTableModel) consulta.getModel();
+		consulta.setRowSorter(new TableRowSorter<DefaultTableModel>(modelo));
+		consulta.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(consulta.getSelectedRow()!=-1) {
+					tfDescricao.setText(consulta.getValueAt(consulta.getSelectedRow(), 1).toString());
+				}
+			}
+		});
+		try {
+			lerDados();
+		} catch (IOException | SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
 		
 		JPanel rodape = new JPanel(new GridLayout(1, 6));
 		btAlterar = new JButton("Alterar");
-		EventosBotoes eventos = new EventosBotoes();
-		btAlterar.addActionListener(eventos);
+		btAlterar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(consulta.getSelectedRow()!=-1) {
+					
+					Categoria c = new Categoria();
+					try {
+						CategoriaDAO dao = new CategoriaDAO();
+						c.setId(Integer.parseInt(consulta.getValueAt(consulta.getSelectedRow(), 0).toString()));
+						c.setDescricao(tfDescricao.getText());
+						dao.updateRegistro(c);
+						lerDados();
+					} catch (SQLException | IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					
+				}
+			}
+		});
 		btExcluir = new JButton("Excluir");
+		btExcluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(consulta.getSelectedRow()!=-1) {
+					
+					Categoria c = new Categoria();
+					try {
+						CategoriaDAO dao = new CategoriaDAO();
+						c.setId(Integer.parseInt(consulta.getValueAt(consulta.getSelectedRow(), 0).toString()));
+						dao.deleteRegistro(c);
+						lerDados();
+					} catch (SQLException | IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					
+				}
+			}
+		});
 		btCancelar = new JButton("Cancelar");
 		btPesquisa = new JButton("Pesquisar");
 		btIncluir = new JButton("Incluir");
 		btSair = new JButton("Sair");
+		btSair.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CadCategorias1.this.doDefaultCloseAction();
+				
+			}
+		});
 		
 		rodape.add(btAlterar);
 		rodape.add(btExcluir);
@@ -55,20 +133,25 @@ public class CadCategorias1 extends JInternalFrame {
 		rodape.add(btSair);
 		
 		add(conteudo,BorderLayout.NORTH);
-		add("Center",new JScrollPane(tabela));
+		add("Center",new JScrollPane(consulta));
 		add(rodape,BorderLayout.SOUTH);
 		
 	}
 	
-	private class EventosBotoes implements ActionListener{
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
+	public void lerDados() throws IOException, SQLException {
+		DefaultTableModel modelo = (DefaultTableModel) consulta.getModel();
+		modelo.setNumRows(0);
+		CategoriaDAO cdao = new CategoriaDAO();
+		
+		for(Categoria c: cdao.obterCategoria()) {
+			modelo.addRow(new Object[] {
+					c.getId(),
+					c.getDescricao()
+					});
 			
 		}
-		
 	}
+
 	
 	
 }

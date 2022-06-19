@@ -20,6 +20,9 @@ import javax.swing.table.TableRowSorter;
 
 import Model.bean.Produto;
 import Model.dao.ProdutosDAO;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.ListSelectionModel;
 
 public class TelaProdutos {
 
@@ -28,7 +31,6 @@ public class TelaProdutos {
 	private JTextField tfQtde;
 	private JTextField tfValor;
 	private JTable table;
-	private JTable table_1;
 	
 	/**
 	 * Launch the application.
@@ -120,9 +122,7 @@ public class TelaProdutos {
 		JButton btExcluir = new JButton("Excluir");
 		btExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(table.getSelectedRow()!=-1) {
-					
-				}
+				System.out.println("Olá mundo");
 			}
 		});
 		panelBotoes.add(btExcluir);
@@ -136,32 +136,48 @@ public class TelaProdutos {
 		panelBotoes.add(btAtualizar);
 		
 		JScrollPane scrollPane = new JScrollPane();
+		
+		
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
-		table_1 = new JTable();
-		table_1.setModel(new DefaultTableModel(
+		table = new JTable();
+		table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		table.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
 				"ID", "Descri\u00E7\u00E3o", "Qtde", "Valor"
 			}
 		));
-		scrollPane.setRowHeaderView(table_1);
-		DefaultTableModel modelo =(DefaultTableModel) table_1.getModel();
-		table_1.setRowSorter(new TableRowSorter<DefaultTableModel>(modelo));
+		
+		scrollPane.setRowHeaderView(table);
+		DefaultTableModel modelo =(DefaultTableModel) table.getModel();
+		table.setRowSorter(new TableRowSorter<DefaultTableModel>(modelo));
 		try {
 			lerTabela();
 		} catch (IOException | SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		scrollPane.setViewportView(table_1);
+		table.addKeyListener(new KeyAdapter() {
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				System.out.println(table.getValueAt(table.getSelectedRow(), 1) );
+				if(table.getSelectedRow()!=-1) {
+					tfDescricao.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+					tfQtde.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
+					tfValor.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+				}
+			}
+		});
+		scrollPane.setViewportView(table);
 		
 		
 		
 	}
 	
 	public void lerTabela() throws IOException, SQLException {
-		DefaultTableModel modelo = (DefaultTableModel) table_1.getModel();
+		DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 		modelo.setNumRows(0);
 		ProdutosDAO pdao = new ProdutosDAO();
 		

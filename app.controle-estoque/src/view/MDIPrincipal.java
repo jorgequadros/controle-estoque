@@ -49,7 +49,7 @@ public class MDIPrincipal extends JFrame{
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							CadCategorias frame = new CadCategorias();
+							CadCategorias1 frame = new CadCategorias1();
 							frame.pack();
 							desktop.add(frame);
 							
