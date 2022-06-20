@@ -1,7 +1,6 @@
 package modulo;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.JOptionPane;
 
 public class Fornecedor {
 
@@ -12,27 +11,30 @@ public class Fornecedor {
 	private String bairro;
 	private String uf;
 	private String cep;
-	List<Contato> TContato = new ArrayList<>();
 		
 	public Fornecedor() {}
 	
 	public Fornecedor(int id, String razaoSocial, String endereco, String cidade, String bairro, String uf, String cep) {
-		super();
-		this.id = id;
-		this.razaoSocial = razaoSocial;
-		this.endereco = endereco;
-		this.cidade = cidade;
-		this.bairro = bairro;
-		this.uf = uf;
-		this.cep = cep;
+		setId(id);
+		setRazaoSocial(razaoSocial);
+		setEndereco(endereco);
+		setCidade(cidade);
+		setBairro(bairro);
+		setUf(uf);
+		setCep(cep);
 	}
 
 	public String getUf() {
 		return uf;
 	}
 
+	@SuppressWarnings("unused")
 	public void setUf(String uf) {
-		this.uf = uf;
+		if(!uf.isEmpty() && uf!=null) {
+			this.uf = uf;
+		}else {
+			JOptionPane.showMessageDialog(null, "Campo UF não informado!!!");
+		}
 	}
 	
 	public String getCidade() {
@@ -49,15 +51,28 @@ public class Fornecedor {
 
 	
 	public void setCidade(String cidade) {
-		this.cidade = cidade;
+		if(!cidade.isEmpty() && cidade!=null) {
+			this.cidade = cidade ;
+		}else{
+			JOptionPane.showMessageDialog(null, "Campo Cidade não preenchido!!!");
+		};
 	}
 
 	public void setBairro(String bairro) {
-		this.bairro = bairro;
+		if(!bairro.isEmpty() && bairro!=null) {
+			this.bairro = bairro;
+		}else{
+			JOptionPane.showMessageDialog(null, "Campo bairro não preenchido!!!");
+		};
 	}
 
 	public void setCep(String cep) {
-		this.cep = cep;
+		if(!cep.isEmpty() && cep!=null) {
+			this.cep = cep;
+		}else{
+			JOptionPane.showMessageDialog(null, "Campo cep não preenchido!!!");
+		};
+		
 	}
 
 
@@ -74,7 +89,11 @@ public class Fornecedor {
 	}
 
 	public void setRazaoSocial(String razaoSocial) {
-		this.razaoSocial = razaoSocial;
+		if(!razaoSocial.isEmpty() && razaoSocial!=null) {
+			this.razaoSocial = razaoSocial;
+		}else {
+			JOptionPane.showMessageDialog(null, "Campo Razão Social esta vazio!!");
+		}
 	}
 
 	public String getEndereco() {
@@ -82,24 +101,11 @@ public class Fornecedor {
 	}
 
 	public void setEndereco(String endereco) {
-		this.endereco = endereco;
-	}
-
-	public List<Contato> getTContato() {
-		return TContato;
-	}
-
-	public void setTContato(Contato tContato) {
-		TContato.add(tContato);
-	}
-	
-	public String toString() {
-		String msg = String.format("Dados Fornecedor\nId : %d\nNome : %s\nEndereço :%s\nLista Contato\n", this.getId(),this.getRazaoSocial(),this.getEndereco());
-		
-		for (Contato contato : TContato) {
-			msg +=String.format("%s - %s -%s\n", contato.getId(),contato.getNome(),contato.getContato());
+		if(!endereco.isEmpty()&&endereco!=null) {
+			this.endereco = endereco;
+		}else {
+			JOptionPane.showMessageDialog(null,"Campo endereço está vazio!!");
 		}
-		
-		return msg;
 	}
+
 }

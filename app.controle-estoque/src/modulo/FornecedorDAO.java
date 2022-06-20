@@ -10,56 +10,43 @@ import java.util.List;
 
 public class FornecedorDAO{
 
-	private static FornecedorDAO instance =null;
 	
-	public FornecedorDAO() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-
-	public static FornecedorDAO getInstance() {
-		if(instance == null) {
-			instance = new FornecedorDAO();
-		};
-		return instance;
-	}
+	public FornecedorDAO() {	}
 	
-
-	public void inserirRegistro(String nome, String endereco, String cidade, String bairro, int UF, String cep) throws IOException, SQLException {
+	public void inserirRegistro(Fornecedor f) throws IOException, SQLException {
 		
 		ConexaoBD.getInstance();
 		Connection conexao = ConexaoBD.getConexao();
 		String sql = "INSERT INTO fornecedor (nome, endereco, cidade, bairro, UF,cep) values(?,?,?,?,?,?)";
 		PreparedStatement stmt1 = conexao.prepareStatement(sql);
-		stmt1.setString(1, nome);
-		stmt1.setString(2, endereco);
-		stmt1.setString(3, cidade);
-		stmt1.setString(4, bairro);
-		stmt1.setInt(5, UF);
-		stmt1.setString(6, cep);
+		stmt1.setString(1, f.getRazaoSocial());
+		stmt1.setString(2, f.getEndereco());
+		stmt1.setString(3, f.getCidade());
+		stmt1.setString(4, f.getBairro());
+		stmt1.setString(5, f.getUf());
+		stmt1.setString(6, f.getCep());
 		stmt1.execute();
 		stmt1.close();
 		
 	}
 	
-	public void updateRegistro(String nome, String endereco, String cidade, String bairro, int UF, String cep, String id) throws IOException, SQLException {
+	public void updateRegistro(Fornecedor f) throws IOException, SQLException {
 		ConexaoBD.getInstance();
 		Connection conexao = ConexaoBD.getConexao();
 		String sql = "UPDATE fornecedor SET nome = ?, endereco = ?, cidade = ?, bairro = ?, UF = ?,cep = ? where id = ?";
 		PreparedStatement stmt1 = conexao.prepareStatement(sql);
-		stmt1.setString(1, nome);
-		stmt1.setString(2, endereco);
-		stmt1.setString(3, cidade);
-		stmt1.setString(4, bairro);
-		stmt1.setInt(5, UF);
-		stmt1.setString(6, cep);
-		stmt1.setString(7, id);
+		stmt1.setString(1, f.getRazaoSocial());
+		stmt1.setString(2, f.getEndereco());
+		stmt1.setString(3, f.getCidade());
+		stmt1.setString(4, f.getBairro());
+		stmt1.setString(5, f.getUf());
+		stmt1.setString(6, f.getCep());
+		stmt1.setInt(7, f.getId());
 		stmt1.execute();
 		stmt1.close();
 	}
 	
-	public void deleteRegistro(String id) throws IOException {
+	public void deleteRegistro(Fornecedor f) throws IOException {
 		ConexaoBD.getInstance();
 		Connection conexao = ConexaoBD.getConexao();
 		String sql = "DELETE  from fornecedor where id = ?";
@@ -67,7 +54,7 @@ public class FornecedorDAO{
 		
 		try {
 			PreparedStatement stmt1 = conexao.prepareStatement(sql);
-			stmt1.setString(1, id);
+			stmt1.setInt(1, f.getId());
 			stmt1.execute();
 			stmt1.close();
 			

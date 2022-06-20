@@ -38,6 +38,7 @@ public class CategoriaDAO {
 			stmt.setString(1, c.getDescricao());
 			stmt.execute();
 			stmt.close();
+			
 		}
 		
 	}
@@ -54,7 +55,6 @@ public class CategoriaDAO {
 			stmt.setInt(2, c.getId());
 			stmt.execute();
 			stmt.close();
-			
 			
 			JOptionPane.showMessageDialog(null, "Atualizado com Sucesso!");
 		} catch (IOException | SQLException e) {
@@ -94,6 +94,33 @@ public class CategoriaDAO {
 			ConexaoBD.getInstance();
 			Connection con = ConexaoBD.getConexao();
 			PreparedStatement stmt = con.prepareStatement("select * from categorias;");
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				Categoria c = new Categoria();
+				c.setId(rs.getInt("id"));
+				c.setDescricao(rs.getString("Descricao"));
+				categorias.add(c);
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return categorias;
+
+	}
+	
+	public List<Categoria> obterCategoriaDescricao(String desc) throws SQLException{
+		
+		List<Categoria> categorias = new ArrayList<>();
+		
+		try {
+			ConexaoBD.getInstance();
+			Connection con = ConexaoBD.getConexao();
+			PreparedStatement stmt = con.prepareStatement("select * from categorias where descricao like ?;");
+			stmt.setString(1, desc+'%');
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()) {

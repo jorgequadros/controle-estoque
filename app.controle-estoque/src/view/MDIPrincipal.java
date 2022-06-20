@@ -34,12 +34,39 @@ public class MDIPrincipal extends JFrame{
 		JMenuBar bar = new JMenuBar();
 		JMenu cadastro = new JMenu("Cadastro");
 		JMenuItem categorias = new JMenuItem("Categorias");
+		JMenuItem fornecedor = new JMenuItem("Fornecedor");
 		
 		cadastro.add(categorias);
+		cadastro.add(fornecedor);
 		bar.add(cadastro);
 		setJMenuBar(bar);
 		
 		add(desktop);
+		
+		fornecedor.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							telaFornecedor frame = new telaFornecedor();
+							frame.pack();
+							desktop.add(frame);
+							
+							frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+							frame.setSize(500, 400);
+							frame.setResizable(true);
+							frame.setVisible(true);
+							
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+		});
 		
 		categorias.addActionListener(new ActionListener() {
 			
@@ -65,6 +92,8 @@ public class MDIPrincipal extends JFrame{
 				});
 			}
 		});
+		
+		
 	}	
 	
 }

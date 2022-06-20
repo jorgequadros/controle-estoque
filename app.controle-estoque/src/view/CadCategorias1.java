@@ -21,6 +21,7 @@ import javax.swing.table.TableRowSorter;
 
 import modulo.Categoria;
 import modulo.CategoriaDAO;
+import modulo.ConexaoBD;
 
 public class CadCategorias1 extends JInternalFrame {
 	
@@ -89,8 +90,6 @@ public class CadCategorias1 extends JInternalFrame {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
-					
 				}
 			}
 		});
@@ -115,13 +114,65 @@ public class CadCategorias1 extends JInternalFrame {
 			}
 		});
 		btCancelar = new JButton("Cancelar");
+		btCancelar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				tfDescricao.setText("");
+			}
+		});
+		
 		btPesquisa = new JButton("Pesquisar");
+		btPesquisa.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try {
+					Categoria c=new Categoria();
+					CategoriaDAO dao=new CategoriaDAO();
+					c.setDescricao(tfDescricao.getText());
+					dao.obterCategoriaDescricao(tfDescricao.getText());
+					try {
+						lerDadosPor();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+
 		btIncluir = new JButton("Incluir");
+		btIncluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Categoria c =new Categoria();
+				try {
+					CategoriaDAO dao = new CategoriaDAO();
+					c.setDescricao(tfDescricao.getText());
+					dao.inserirRegistro(c);
+				} catch (SQLException |IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		
 		btSair = new JButton("Sair");
 		btSair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CadCategorias1.this.doDefaultCloseAction();
-				
+				try {
+					ConexaoBD.getInstance().desligar();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -151,7 +202,18 @@ public class CadCategorias1 extends JInternalFrame {
 			
 		}
 	}
-
 	
-	
+	public void lerDadosPor() throws IOException, SQLException {
+		DefaultTableModel modelo = (DefaultTableModel) consulta.getModel();
+		modelo.setNumRows(0);
+		CategoriaDAO cdao = new CategoriaDAO();
+		
+		for(Categoria c1: cdao.obterCategoriaDescricao(tfDescricao.getText())) {
+			modelo.addRow(new Object[] {
+					c1.getId(),
+					c1.getDescricao()
+					});
+			
+		}
+	}
 }
